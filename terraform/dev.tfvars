@@ -11,5 +11,5 @@ db_engine_version = "17.6"
 db_instance_class = "db.t4g.micro"
 db_allocated_storage = 20
 db_storage_type = "gp2"
-db_subnet_name = "aurora-subnet-id"
+db_subnet_name = "aurora-subnet-id-2"
 db_identifier = "aurora-db"

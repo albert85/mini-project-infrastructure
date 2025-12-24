@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+        parameters {
+        string(
+                name: 'WEB_SERVER_IP', 
+                defaultValue: '157.230.128.130',
+                description: 'IP address of the WEBSERVER server'
+        )
+        string(
+                name: "SITE_URL", 
+                defaultValue: 'https://www.techbleat.com',
+                description: 'URL of the website to be deployed'
+        )
+        string(
+                name: "DOMAIN_NAME", 
+                defaultValue: 'techbleat.com',
+                description: 'Domain name of the website to be deployed'
+        )
+        string(
+                name: "BACKEND_IP",
+                defaultValue: '157.230.128.130',
+                description: 'IP address of the backend server'
+        )
+    }
+
+    stages {
+         stage ('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                sshagent(['devop-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    sudo yum install git nginx certbot python3-certbot-nginx -y;
+                    sudo systemctl start nginx;'
+                    """
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sshagent(['devop-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    cd ~; 
+                    sudo rm -rf fruits-veg_market;
+                    git clone https://github.com/albert85/fruits-veg_market.git;
+                    cd fruits-veg_market;
+                    git checkout ft/mini-project;
+                    cd frontend;
+                    sed 's/SITE_URL/${params.SITE_URL}/g' -i frontend/index.html;
+                    sed 's/domain_name/${params.DOMAIN_NAME}/g' -i frontend/devop-training.conf;
+                    sed 's/BACKEND_IP/${params.BACKEND_IP}/g' -i frontend/devop-training.conf;
+                    sudo cp -r index.html /usr/share/nginx/html/;
+                    sudo systemctl restart nginx;
+                    sudo cp -r devop-training.conf /etc/nginx/conf.d/;
+                    '
+                    """
+                }
+            }
+        }
+    }
+}

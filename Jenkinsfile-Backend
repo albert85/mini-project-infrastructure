@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+        parameters {
+        string(
+                name: 'WEB_SERVER_IP', 
+                defaultValue: '157.230.128.130',
+                description: 'IP address of the WEBSERVER server'
+        )
+        string(
+                name: "SITE_URL", 
+                defaultValue: 'https://www.techbleat.com',
+                description: 'URL of the website to be deployed'
+        )
+        string(
+                name: "DOMAIN_NAME", 
+                defaultValue: 'techbleat.com',
+                description: 'Domain name of the website to be deployed'
+        )
+        string(
+                name: "BACKEND_IP",
+                defaultValue: '157.230.128.130',
+                description: 'IP address of the backend server'
+        )
+    }
+
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = 'eu-north-1'
+        DB_USERNAME = credentials('DB_USERNAME')
+        DB_PASSWORD = credentials('DB_PASSWORD')
+        DB_HOST = credentials('DB_HOST')
+    }
+
+    stages {
+         stage ('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                sshagent(['devop-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    sudo yum install git python3 -y;'
+                    """
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sshagent(['devop-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    cd ~; 
+                    sudo rm -rf fruits-veg_market;
+                    git clone https://github.com/albert85/fruits-veg_market.git;
+                    cd fruits-veg_market;
+                    git checkout ft/mini-project;
+                    cd backend-api;
+                    python3 -m venv .venv;
+                    source .venv/bin/activate;
+                    pip install -r requirements.txt;
+                    sudo cp product.service /etc/systemd/system/fruits.service;
+                    sudo systemctl  daemon-reload;
+                    sudo systemctl restart fruits.service;'
+                    """
+                }
+            }
+        }
+    }
+}

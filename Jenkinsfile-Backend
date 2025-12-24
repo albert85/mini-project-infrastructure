@@ -2,22 +2,7 @@ pipeline {
     agent any
         parameters {
         string(
-                name: 'WEB_SERVER_IP', 
-                defaultValue: '157.230.128.130',
-                description: 'IP address of the WEBSERVER server'
-        )
-        string(
-                name: "SITE_URL", 
-                defaultValue: 'https://www.techbleat.com',
-                description: 'URL of the website to be deployed'
-        )
-        string(
-                name: "DOMAIN_NAME", 
-                defaultValue: 'techbleat.com',
-                description: 'Domain name of the website to be deployed'
-        )
-        string(
-                name: "BACKEND_IP",
+                name: 'BACKEND_IP', 
                 defaultValue: '157.230.128.130',
                 description: 'IP address of the backend server'
         )
@@ -42,7 +27,7 @@ pipeline {
             steps {
                 sshagent(['devop-key']) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.BACKEND_IP} '
                     sudo yum install git python3 -y;'
                     """
                 }
@@ -52,7 +37,7 @@ pipeline {
             steps {
                 sshagent(['devop-key']) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@${params.WEB_SERVER_IP} '
+                    ssh -o StrictHostKeyChecking=no ec2-user@${params.BACKEND_IP} '
                     cd ~; 
                     sudo rm -rf fruits-veg_market;
                     git clone https://github.com/albert85/fruits-veg_market.git;

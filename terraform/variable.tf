@@ -45,3 +45,6 @@ variable "db_subnet_name" {
 variable "db_identifier" {
     type = string
 }
+variable "project_aurora_subnet" {
+    type = string
+}

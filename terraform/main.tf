@@ -148,7 +148,7 @@ resource "aws_instance" "backend-server" {
 # ----------------------------
 resource "aws_db_subnet_group" "aurora-db-subnet-group" {
   name       = var.db_subnet_name
-  subnet_ids = [var.project_subnet]
+  subnet_ids = [var.project_subnet, var.project_aurora_subnet]
 }
 
 # ----------------------------

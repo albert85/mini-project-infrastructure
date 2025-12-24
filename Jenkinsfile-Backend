@@ -47,6 +47,9 @@ pipeline {
                     python3 -m venv .venv;
                     source .venv/bin/activate;
                     pip install -r requirements.txt;
+                    sed 's/db_name/$DB_USERNAME/g' -i product.service;
+                    sed 's/db_password/$DB_PASSWORD/g' -i product.service;
+                    sed 's/db_host/$DB_HOST/g' -i product.service;
                     sudo cp product.service /etc/systemd/system/fruits.service;
                     sudo systemctl  daemon-reload;
                     sudo systemctl restart fruits.service;'

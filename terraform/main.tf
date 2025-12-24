@@ -118,7 +118,7 @@ resource "aws_instance" "web-server" {
   key_name = var.project_keyname
 
   tags = {
-    Name = "project"
+    Name = "web-server"
   }
 }
 

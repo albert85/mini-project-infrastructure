@@ -143,31 +143,6 @@ resource "aws_instance" "backend-server" {
 }
 
 
-# ----------------------------
-# create db subnet group
-# ----------------------------
-resource "aws_db_subnet_group" "aurora-db-subnet-group" {
-  name       = var.db_subnet_name
-  subnet_ids = [var.project_subnet, var.project_aurora_subnet]
-}
-
-# ----------------------------
-# create aurora rds database
-# ----------------------------
-resource "aws_rds_cluster" "aurora-db" {
-  engine                 = var.db_engine
-  engine_version         = var.db_engine_version
-  allocated_storage      = var.db_allocated_storage
-  storage_type           = var.db_storage_type
-  master_username        =   var.db_username
-  master_password        = var.db_password
-  skip_final_snapshot    = true
-
-  vpc_security_group_ids = [aws_security_group.backend-sg.id]
-  db_subnet_group_name   = aws_db_subnet_group.aurora-db-subnet-group.name
-  apply_immediately      = true
-}
-
 #----------------------------
 # Outputs
 #----------------------------

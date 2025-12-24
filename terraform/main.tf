@@ -154,17 +154,15 @@ resource "aws_db_subnet_group" "aurora-db-subnet-group" {
 # ----------------------------
 # create aurora rds database
 # ----------------------------
-resource "aws_db_instance" "aurora-db" {
+resource "aws_rds_cluster" "aurora-db" {
   engine                 = var.db_engine
   engine_version         = var.db_engine_version
-  identifier             = var.db_identifier
-  instance_class         = var.db_instance_class
   allocated_storage      = var.db_allocated_storage
   storage_type           = var.db_storage_type
-  username               = var.db_username
-  password               = var.db_password
+  master_username        =   var.db_username
+  master_password        = var.db_password
   skip_final_snapshot    = true
-  publicly_accessible    = true
+
   vpc_security_group_ids = [aws_security_group.backend-sg.id]
   db_subnet_group_name   = aws_db_subnet_group.aurora-db-subnet-group.name
   apply_immediately      = true

@@ -51,13 +51,12 @@ pipeline {
                     cd fruits-veg_market;
                     git checkout ft/mini-project;
                     cd frontend;
-                    sed 's/SITE_URL/${params.SITE_URL}/g' -i index.html;
+                    sed "s|SITE_URL/${params.SITE_URL}|g" -i index.html;
                     sed 's/domain_name/${params.DOMAIN_NAME}/g' -i devop-training.conf;
                     sed 's/BACKEND_IP/${params.BACKEND_IP}/g' -i devop-training.conf;
                     sudo cp -r index.html /usr/share/nginx/html/;
                     sudo systemctl restart nginx;
-                    sudo cp -r devop-training.conf /etc/nginx/conf.d/;
-                    '
+                    sudo cp -r devop-training.conf /etc/nginx/conf.d/;'
                     """
                 }
             }

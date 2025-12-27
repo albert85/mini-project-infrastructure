@@ -142,6 +142,64 @@ resource "aws_instance" "backend-server" {
   }
 }
 
+resource "aws_security_group" "rds_sg" {
+  name        = var.rds_name
+  description = "RDS PostgreSQL access"
+  vpc_id      = var.project_vpc
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_db_subnet_group" "rds_subnet" {
+  name       = var.rds_subnet_name
+  subnet_ids = [var.project_subnet, var.project_aurora_subnet]
+}
+
+resource "aws_db_instance" "postgres" {
+  identifier = var.db_identifier
+
+  engine         =var.db_engine
+  engine_version = var.db_engine_version
+
+  instance_class = var.db_instance_class
+
+  allocated_storage = 20
+  storage_type      = var.db_storage_type
+
+  db_name  = var.db_username
+  username = var.db_password
+  password = var.db_password
+
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet.name
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+
+  publicly_accessible = true
+  multi_az            = false
+
+  skip_final_snapshot = true
+  deletion_protection = false
+
+  backup_retention_period = 7
+
+  tags = {
+    Name        = "free-tier-postgres"
+    Environment = var.environment
+  }
+}
+
+
 
 #----------------------------
 # Outputs

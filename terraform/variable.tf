@@ -48,3 +48,27 @@ variable "db_identifier" {
 variable "project_aurora_subnet" {
     type = string
 }
+variable "private_subnet_ids" {
+  type = list(string)
+}
+
+variable "allowed_cidrs" {
+  default = ["10.0.0.0/16"]
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "environment" {
+  default = "dev"
+}
+
+variable "rds_subnet_name" {
+  type = string
+}
+
+variable "rds_name" {
+  type = string
+}

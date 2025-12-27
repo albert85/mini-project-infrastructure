@@ -46,9 +46,6 @@ variable "db_identifier" {
 variable "project_aurora_subnet" {
     type = string
 }
-variable "private_subnet_ids" {
-  type = list(string)
-}
 
 variable "allowed_cidrs" {
   default = ["10.0.0.0/16"]

@@ -191,8 +191,6 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot = true
   deletion_protection = false
 
-  backup_retention_period = 7
-
   tags = {
     Name        = "free-tier-postgres"
     Environment = var.environment

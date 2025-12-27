@@ -171,7 +171,7 @@ resource "aws_db_instance" "postgres" {
   identifier = var.db_identifier
 
   engine         =var.db_engine
-  engine_version = var.db_engine_version
+
 
   instance_class = var.db_instance_class
 

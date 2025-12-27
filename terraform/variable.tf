@@ -24,9 +24,7 @@ variable "db_username" {
 variable "db_engine" {
     type = string
 }
-variable "db_engine_version" {
-    type = string
-}
+
 variable "db_instance_class" {
     type = string
 }

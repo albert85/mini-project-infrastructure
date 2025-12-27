@@ -146,12 +146,21 @@ resource "aws_security_group" "rds_sg" {
   name        = var.rds_name
   description = "RDS PostgreSQL access"
   vpc_id      = var.project_vpc
-
+  
   ingress {
+    description = "Postgres from VPC"
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  ingress {
+    description = "Postgres from anywhere (DEV ONLY)"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

@@ -17,9 +17,7 @@ variable "project_keyname" {
     type = string
 }
 
-variable "db_password" {
-    type = string
-}
+
 variable "db_username" {
     type = string
 }
